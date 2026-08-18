@@ -34,3 +34,29 @@ CREATE TABLE device_logs (
     is_faulty INT                   -- 0: Normal, 1: Arıza / Bakım Gerekiyor
 );
 
+-- 5. Customers 
+CREATE TABLE customers(
+    musteri_no SERIAL primary key,
+    isim VARCHAR(50),
+    soyisim VARCHAR(50),
+    unvan VARCHAR(20),
+    kayit_tarihi timestamp,
+    adres VARCHAR(100),
+    telefon VARCHAR(20),
+    e_posta VARCHAR(30)
+    
+);
+
+--- 6.Accounts
+CREATE TABLE accounts(
+    musteri_no int references customers(musteri_no),
+    kayit_tarihi timestamp,
+    durum VARCHAR(10),
+    hesap_adi VARCHAR(40),
+    doviz_kodu VARCHAR(10),
+    bakiye NUMERIC(12,2),
+    bloke_tutar NUMERIC(12,2),
+    faiz_orani_baz_puan INT,
+    iban VARCHAR(30)
+
+);

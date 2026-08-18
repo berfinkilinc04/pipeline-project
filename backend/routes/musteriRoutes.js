@@ -49,6 +49,24 @@ router.put("/:müsteri_no", async (req, res)=>{
 }
 });
 
+// müşteri silme endpoint'i
+router.delete("/:musteri_no", async(req, res)=>{
+    const { musteri_no} = req.params;
+    try{
+        const result = await pool.query(
+            "DELETER FROM customers WHERE musteri_no= $1 RETURNING *",
+            [musteri_no]
+        );
+        if (result.rows.length === 0){
+            return res.status(404).send("müşteri bulunamadı.");    
+        }
+
+     res.json({ mesaj: 'Müşteri silindi.', silinen: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Müşteri silinemedi.');
+  }
+});
 
 
 module.exports = router;
