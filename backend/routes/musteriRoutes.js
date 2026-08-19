@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("../db");
+const tcDogrula = require("../middlewares/tcMiddleware");
 
 router.get("/", async (req, res) =>{
     try{
@@ -13,7 +14,7 @@ router.get("/", async (req, res) =>{
 });
 
 // müşteri ekleme endpoint'i
-router.post("/", async (req, res) => {
+router.post("/", tcDogrula, async (req, res) => {
     const { isim, soyisim, unvan, adres, telefon, e_posta, tc_kimlik_no } = req.body;
 
     try {
@@ -29,7 +30,7 @@ router.post("/", async (req, res) => {
 });
 
 // müşteri güncelleme endpoint'i
-router.put("/:müsteri_no", async (req, res)=>{
+router.put("/:müsteri_no", tcDogrula, async (req, res)=>{
     const { musteri_no } = req.params;
     const {isim,soyisim,unvan,adres, telefon, e_posta, tc_kimlik_no} = req.body;
 
@@ -54,7 +55,7 @@ router.delete("/:musteri_no", async(req, res)=>{
     const { musteri_no} = req.params;
     try{
         const result = await pool.query(
-            "DELETER FROM customers WHERE musteri_no= $1 RETURNING *",
+            "DELETE FROM customers WHERE musteri_no= $1 RETURNING *",
             [musteri_no]
         );
         if (result.rows.length === 0){
