@@ -1,2 +1,4 @@
 __pycache__
 .venv
+pos_db_local.session.sql
+.vscode
