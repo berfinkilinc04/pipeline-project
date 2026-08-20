@@ -1,4 +1,4 @@
-const tcKimlikKontrol = require("./validateTC");
+const tcKimlikKontrol = require("./tcKontrol");
 
 function tcDogrulama(req, res, next){
     const { tc } = req.body;
