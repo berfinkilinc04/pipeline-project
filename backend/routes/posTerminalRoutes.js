@@ -20,8 +20,8 @@ router.get("/", async(req, res) =>{
 router.post("/", async(req,res)=> {
     const { merchant_id, device_model, install_date, status, kapanma_nedeni, kullanim_tipi, model_kodu,servis_firması, seri_no} = req.body;
 
-    // status "0" ise kapanma_nedeni zorunlu
-    if(String(status) === "0" && (!kapanma_nedeni || kapanma_nedeni.trim()=="")){
+    // status "Inactive" ise kapanma_nedeni zorunlu
+    if(status === "Inactive" && (!kapanma_nedeni || kapanma_nedeni.trim()=="")){
         return req.status(400).json({hata: "cihaz kapalıysa kapanma nedeni zorunludur."})
 
     }
@@ -42,7 +42,7 @@ router.put('/:terminal_id', async (req, res) => {
   const { terminal_id } = req.params;
   const { merchant_id, device_model, install_date, status, kapanma_nedeni, kullanim_tipi, model_kodu, servis_firmasi, seri_no } = req.body;
 
-  if (String(status) === '0' && (!kapanma_nedeni || kapanma_nedeni.trim() === '')) {
+  if (status === 'Inactive' && (!kapanma_nedeni || kapanma_nedeni.trim() === '')) {
     return res.status(400).json({ hata: 'Cihaz kapalıysa kapanma nedeni zorunludur' });
   }
 

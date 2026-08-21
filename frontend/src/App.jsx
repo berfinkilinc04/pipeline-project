@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 function App() {
+  // ---- MÜŞTERİ ----
   const [musteriler, setMusteriler] = useState([]);
   const [form, setForm] = useState({
     isim: '',
@@ -18,10 +19,6 @@ function App() {
       .then((data) => setMusteriler(data))
       .catch((err) => console.error('Hata:', err));
   };
-
-  useEffect(() => {
-    musterileriGetir();
-  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,6 +55,65 @@ function App() {
       .catch((err) => console.error('Hata:', err));
   };
 
+  // ---- TERMİNAL ----
+  const [terminaller, setTerminaller] = useState([]);
+  const [terminalForm, setTerminalForm] = useState({
+    merchant_id: '',
+    device_model: '',
+    install_date: '',
+    status: '1',
+    kapanma_nedeni: '',
+    kullanim_tipi: '',
+    model_kodu: '',
+    servis_firmasi: '',
+    seri_no: '',
+  });
+
+  const terminalleriGetir = () => {
+    fetch('http://localhost:5001/terminaller')
+      .then((res) => res.json())
+      .then((data) => setTerminaller(data))
+      .catch((err) => console.error('Hata:', err));
+  };
+
+  const handleTerminalChange = (e) => {
+    const { name, value } = e.target;
+    setTerminalForm({ ...terminalForm, [name]: value });
+  };
+
+  const handleTerminalSubmit = (e) => {
+    e.preventDefault();
+
+    fetch('http://localhost:5001/terminaller', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(terminalForm),
+    })
+      .then((res) => res.json())
+      .then(() => {
+        terminalleriGetir();
+        setTerminalForm({
+          merchant_id: '',
+          device_model: '',
+          install_date: '',
+          status: 'Active',
+          kapanma_nedeni: '',
+          kullanim_tipi: '',
+          model_kodu: '',
+          servis_firmasi: '',
+          seri_no: '',
+        });
+      })
+      .catch((err) => console.error('Hata:', err));
+  };
+
+  // ---- SAYFA AÇILINCA İKİSİNİ DE ÇEK ----
+  useEffect(() => {
+    musterileriGetir();
+    terminalleriGetir();
+  }, []);
+
+  // ---- EKRANA ÇİZİLECEK KISIM ----
   return (
     <div>
       <h1>Müşteri Ekle</h1>
@@ -83,6 +139,45 @@ function App() {
         {musteriler.map((musteri) => (
           <li key={musteri.musteri_no}>
             {musteri.isim} {musteri.soyisim}
+          </li>
+        ))}
+      </ul>
+
+      <h1>Terminal Ekle</h1>
+      <form onSubmit={handleTerminalSubmit}>
+        <input name="merchant_id" placeholder="Merchant ID" value={terminalForm.merchant_id} onChange={handleTerminalChange} />
+        <input name="device_model" placeholder="Cihaz Modeli" value={terminalForm.device_model} onChange={handleTerminalChange} />
+        <input name="install_date" type="date" value={terminalForm.install_date} onChange={handleTerminalChange} />
+
+        <select name="status" value={terminalForm.status} onChange={handleTerminalChange}>
+          <option value="Active">Açık</option>
+          <option value="Maintenance">Maintenance</option>
+          <option value="Inactive">Kapalı</option>
+        </select>
+
+        {terminalForm.status === 'Inactive' && (
+          <input
+            name="kapanma_nedeni"
+            placeholder="Kapanma Nedeni (zorunlu)"
+            value={terminalForm.kapanma_nedeni}
+            onChange={handleTerminalChange}
+            required
+          />
+        )}
+
+        <input name="kullanim_tipi" placeholder="Kullanım Tipi" value={terminalForm.kullanim_tipi} onChange={handleTerminalChange} />
+        <input name="model_kodu" placeholder="Model Kodu" value={terminalForm.model_kodu} onChange={handleTerminalChange} />
+        <input name="servis_firmasi" placeholder="Servis Firması" value={terminalForm.servis_firmasi} onChange={handleTerminalChange} />
+        <input name="seri_no" placeholder="Seri No" value={terminalForm.seri_no} onChange={handleTerminalChange} />
+
+        <button type="submit">Terminal Ekle</button>
+      </form>
+
+      <h1>Terminal Listesi</h1>
+      <ul>
+        {terminaller.map((terminal) => (
+          <li key={terminal.terminal_id}>
+            {terminal.device_model} — {terminal.status}
           </li>
         ))}
       </ul>
