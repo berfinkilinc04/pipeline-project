@@ -12,7 +12,7 @@ function App() {
     e_posta: '',
     tc_kimlik_no: '',
   });
-
+ 
   const musterileriGetir = () => {
     fetch('http://localhost:5001/musteriler')
       .then((res) => res.json())
@@ -106,6 +106,22 @@ function App() {
       })
       .catch((err) => console.error('Hata:', err));
   };
+  // ---- ARAMA ----  
+  const [aramaMetni, setAramaMetni] = useState('');
+  const [aramaSonuc, setAramaSonuc] = useState({ customers: [], merchants: [], terminals: [] });
+
+  const aramaYap = (metin) => {  
+
+    setAramaMetni(metin);
+    if (metin.trim() === '') {
+      setAramaSonuc({ customers: [], merchants: [], terminals: [] });
+      return;
+    }
+    fetch(`http://localhost:5001/ara?q=${encodeURIComponent(metin)}`)
+      .then((res) => res.json())
+      .then((data) => setAramaSonuc(data))
+      .catch((err) => console.error('Hata:', err));
+  };
 
   // ---- SAYFA AÇILINCA İKİSİNİ DE ÇEK ----
   useEffect(() => {
@@ -116,6 +132,37 @@ function App() {
   // ---- EKRANA ÇİZİLECEK KISIM ----
   return (
     <div>
+      <h1>Arama</h1>
+<input
+  placeholder="Müşteri, işyeri veya terminal ara..."
+  value={aramaMetni}
+  onChange={(e) => aramaYap(e.target.value)}
+/>
+
+{aramaMetni.trim() !== '' && (
+  <div>
+    <h3>Müşteriler</h3>
+    <ul>
+      {aramaSonuc.customers.map((m) => (
+        <li key={`musteri-${m.musteri_no}`}>{m.isim} {m.soyisim}</li>
+      ))}
+    </ul>
+
+    <h3>İşyerleri</h3>
+    <ul>
+      {aramaSonuc.merchants.map((m) => (
+        <li key={`merchant-${m.merchant_id}`}>{m.merchant_name} — {m.city}</li>
+      ))}
+    </ul>
+
+    <h3>Terminaller</h3>
+    <ul>
+      {aramaSonuc.terminals.map((t) => (
+        <li key={`terminal-${t.terminal_id}`}>{t.device_model} — {t.seri_no}</li>
+      ))}
+    </ul>
+  </div>
+)}
       <h1>Müşteri Ekle</h1>
       <form onSubmit={handleSubmit}>
         <input name="isim" placeholder="İsim" value={form.isim} onChange={handleChange} />

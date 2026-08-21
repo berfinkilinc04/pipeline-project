@@ -5,6 +5,7 @@ const pool = require('./db');
 const musteriRoutes = require("./routes/musteriRoutes");
 const riskRoutes = require('./routes/riskRoutes');
 const posTerminalRoutes = require("./routes/posTerminalRoutes");
+const searchRoutes = require('./routes/searchRoutes');
 
 const app = express();
 const port = 5001;
@@ -13,6 +14,7 @@ app.use(cors());
 app.use(express.json());
 app.use("/musteriler", musteriRoutes);
 app.use('/riskli-cihazlar', riskRoutes);
+app.use('/ara', searchRoutes);
 app.use("/terminaller", posTerminalRoutes);
 
 app.get('/test-db', async (req, res) => {
