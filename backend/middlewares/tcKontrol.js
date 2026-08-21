@@ -9,10 +9,12 @@ function tcKimlikKontrol(tc){
     const ciftToplam = rakamlar[1] + rakamlar[3] + rakamlar[5] + rakamlar[7];
 
     const onuncuRakam = ((tekToplam * 7) - ciftToplam) % 10;
-    if (onuncuRakam !== rakamlar[9]) return false;
-
-    const ilkOnRakamToplam = rakamlar.slice(0,10).reduce((a,b) => a + b,0);
+    const ilkOnRakamToplam = rakamlar.slice(0,10).reduce((a,b) => a+b, 0);
     const onBirinciRakam = ilkOnRakamToplam % 10;
+
+    console.log({ tc, tekToplam, ciftToplam, onuncuRakam, beklenen10: rakamlar[9], ilkOnRakamToplam, onBirinciRakam, beklenen11: rakamlar[10] });
+
+    if (onuncuRakam !== rakamlar[9]) return false;
     if (onBirinciRakam !== rakamlar[10]) return false;
 
     return true;
